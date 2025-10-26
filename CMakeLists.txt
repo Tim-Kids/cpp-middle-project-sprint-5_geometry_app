@@ -19,18 +19,18 @@ endif()
 find_package(GTest REQUIRED)
 
 include(FetchContent)
-FetchContent_Declare(
-  CPM
-  GIT_REPOSITORY https://github.com/cpm-cmake/CPM.cmake
-  GIT_TAG origin/master
-)
-FetchContent_MakeAvailable(CPM)
+#FetchContent_Declare(
+#  CPM
+#  GIT_REPOSITORY https://github.com/cpm-cmake/CPM.cmake
+#  GIT_TAG origin/master
+#)
+#FetchContent_MakeAvailable(CPM)
 
-CPMAddPackage(
-    NAME matplotplusplus
-    GITHUB_REPOSITORY alandefreitas/matplotplusplus
-    GIT_TAG v1.2.2
-)
+#CPMAddPackage(
+#    NAME matplotplusplus
+#    GITHUB_REPOSITORY alandefreitas/matplotplusplus
+#    GIT_TAG v1.2.2
+#)
 
 file(GLOB HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*.hpp")
 file(GLOB SRC_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
