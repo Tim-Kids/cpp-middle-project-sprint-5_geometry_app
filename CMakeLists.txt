@@ -19,25 +19,25 @@ endif()
 find_package(GTest REQUIRED)
 
 include(FetchContent)
-#FetchContent_Declare(
-#  CPM
-#  GIT_REPOSITORY https://github.com/cpm-cmake/CPM.cmake
-#  GIT_TAG origin/master
-#)
-#FetchContent_MakeAvailable(CPM)
+FetchContent_Declare(
+  CPM
+  GIT_REPOSITORY https://github.com/cpm-cmake/CPM.cmake
+  GIT_TAG origin/master
+)
+FetchContent_MakeAvailable(CPM)
 
-#CPMAddPackage(
-#    NAME matplotplusplus
-#    GITHUB_REPOSITORY alandefreitas/matplotplusplus
-#    GIT_TAG v1.2.2
-#)
+CPMAddPackage(
+    NAME matplotplusplus
+    GITHUB_REPOSITORY alandefreitas/matplotplusplus
+    GIT_TAG v1.2.2
+)
 
 file(GLOB HEADER_FILES "${CMAKE_SOURCE_DIR}/include/*.hpp")
 file(GLOB SRC_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
 list(REMOVE_ITEM SRC_FILES "${CMAKE_SOURCE_DIR}/src/main.cpp")
 
 # Создаём статическую библиотеку
-add_library(${PROJECT_NAME}_imp STATIC "${CMAKE_SOURCE_DIR}/src/main.cpp" ${SRC_FILES} ${HEADER_FILES})
+add_library(${PROJECT_NAME}_imp STATIC #[["${CMAKE_SOURCE_DIR}/src/main.cpp"]] ${SRC_FILES} ${HEADER_FILES})
 
 # Добавляем в проект используемые сторонние библиотеки
 target_include_directories(${PROJECT_NAME}_imp
@@ -52,6 +52,8 @@ target_link_libraries(${PROJECT_NAME}_imp PRIVATE matplot)
 # Создаём исполняемый таргет и линкуем к нему статическую библиотеку
 add_executable(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/src/main.cpp")
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_imp)
+
+add_executable(blueprint "${CMAKE_CURRENT_SOURCE_DIR}/third_party/blueprint.cpp")
 
 #
 # Тесты

@@ -75,13 +75,13 @@ int main() {
     //
     // Вызываем разработанные функции
     //
-    PrintAllIntersections(shapes[0], shapes);
+    // PrintAllIntersections(shapes[0], shapes);
 
-    PrintDistancesFromPointToShapes(Point2D{10.0, 10.0}, shapes);
+    // PrintDistancesFromPointToShapes(Point2D{10.0, 10.0}, shapes);
 
-    PerformShapeAnalysis(shapes);
+    // PerformShapeAnalysis(shapes);
 
-    PerformExtraShapeAnalysis(shapes);
+    // PerformExtraShapeAnalysis(shapes);
 
     //
     // Рисуем все фигуры
