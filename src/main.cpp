@@ -110,7 +110,7 @@ int main() {
     }
 
     // [[optional]] Remove duplicates (within a small epsilon).
-    utils::RemoveDuplicates(points);
+    // utils::RemoveDuplicates(points);
 
     std::println("\nCollected {} points for convex hull", points.size());
 

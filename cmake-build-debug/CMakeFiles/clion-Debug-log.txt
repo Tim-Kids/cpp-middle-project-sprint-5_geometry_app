@@ -19,7 +19,7 @@ Call Stack (most recent call first):
 -- Could NOT find BLAS (missing: BLAS_LIBRARIES) 
 -- Could NOT find PkgConfig (missing: PKG_CONFIG_EXECUTABLE) 
 -- Could NOT find FFTW (missing: FFTW_INCLUDE_DIRS) 
--- Configuring done (0.6s)
+-- Configuring done (0.7s)
 Setting matplotplusplus compiler options
 -- Generating done (0.0s)
 -- Build files have been written to: /tmp/cpp-middle-project-sprint-5-main/cmake-build-debug

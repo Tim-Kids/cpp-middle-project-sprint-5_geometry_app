@@ -463,8 +463,7 @@ using GeometryResult = std::expected<T, GeometryError>;
  */
 
 struct ReplaceMe {
-    ReplaceMe(std::vector<Shape>) {
-    }
+    ReplaceMe(std::vector<Shape>) {}
 };
 
 } // namespace geometry

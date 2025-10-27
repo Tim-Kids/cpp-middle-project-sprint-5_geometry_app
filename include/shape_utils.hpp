@@ -3,7 +3,7 @@
 #include "geometry.hpp"
 #include "queries.hpp"
 
-#include <print>
+#include <span>
 #include <random>
 #include <ranges>
 #include <utility>
@@ -98,27 +98,31 @@ class ShapeGenerator {
     std::uniform_int_distribution<int> type_dist_;
 };
 
-std::vector<std::pair<Shape, Shape>> FindAllCollisions(ReplaceMe shapes) {
+inline std::vector<std::pair<Shape, Shape>> FindAllCollisions(std::span<const Shape> shapes) {
     std::vector<std::pair<Shape, Shape>> collisions;
+    collisions.reserve(shapes.size());
 
-    /*
-     * Используйте библиотеку ranges, чтобы найти все коллизии между фигурами методом BoundingBoxesOverlap
-     *
-     * Также используйте наиболее эффективный метод добавления объектов в collisions
-     */
-
+    for(auto [i, s1]: std::views::enumerate(shapes)) {
+        // Only check pairs (i, j) with j > i.
+        for(auto [j, s2]: std::views::enumerate(shapes) | std::views::drop(i + 1)) {
+            if(queries::BoundingBoxesOverlap(s1, s2)) {
+                collisions.emplace_back(s1, s2);
+            }
+        }
+    }
     return collisions;
 }
 
-std::optional<size_t> FindHighestShape(ReplaceMe shapes) {
+std::optional<size_t> FindHighestShape(std::span<const Shape> shapes) {
+    if(shapes.empty()) {
+        return std::nullopt;
+    }
 
-    /*
-     * Используйте библиотеку ranges, чтобы найти самую высокую фигуру
-     *
-     * Важно: использование ручной итерации по фигурам не разрешается
-     */
+    auto it = std::ranges::max_element(shapes, {}, [](const Shape& s) {
+        return queries::GetHeight(s);
+    });
 
-    return std::nullopt;
+    return static_cast<size_t>(std::distance(shapes.begin(), it));
 }
 
 } // namespace geometry::utils
