@@ -1,18 +1,37 @@
 #pragma once
+
 #include "geometry.hpp"
 #include "queries.hpp"
+
 #include <print>
 #include <random>
 #include <ranges>
 #include <utility>
 #include <vector>
+#include <algorithm>
 
 namespace geometry::utils {
 
+inline void RemoveDuplicates(std::vector<Point2D>& points) {
+    constexpr double eps = 1e-9;
+    std::ranges::sort(points, {}, [](const Point2D& p) {
+        return std::pair{p.x, p.y};
+    });
+    auto last = std::unique(points.begin(), points.end(), [&](const Point2D& a, const Point2D& b) {
+        return std::abs(a.x - b.x) < eps && std::abs(a.y - b.y) < eps;
+    });
+    points.erase(last, points.end());
+}
+
 class ShapeGenerator {
-public:
-    explicit ShapeGenerator(double min_coord = -100.0, double max_coord = 100.0, double min_size = 1.0, double max_size = 20.0)
-        : gen_(20), coord_dist_(min_coord, max_coord), size_dist_(min_size, max_size), sides_dist_(3, 12), type_dist_(0, 4) {
+    public:
+    explicit ShapeGenerator(double min_coord = -100.0, double max_coord = 100.0, double min_size = 1.0,
+                            double max_size  = 20.0) :
+        gen_(20),
+        coord_dist_(min_coord, max_coord),
+        size_dist_(min_size, max_size),
+        sides_dist_(3, 12),
+        type_dist_(0, 4) {
     }
 
     Shape GenerateRandomShape() {
@@ -48,7 +67,7 @@ public:
         std::vector<Shape> shapes;
         shapes.reserve(count);
 
-        for (auto _ : std::views::iota(0u, count)) {
+        for(auto _: std::views::iota(0u, count)) {
             shapes.push_back(GenerateRandomShape());
         }
 
@@ -59,7 +78,7 @@ public:
         std::vector<Shape> shapes;
         shapes.reserve(count);
 
-        for (auto _ : std::views::iota(0u, count)) {
+        for(auto _: std::views::iota(0u, count)) {
             Point2D center{coord_dist_(gen_), coord_dist_(gen_)};
             double size = size_dist_(gen_);
             Point2D a{center.x, center.y};
@@ -71,7 +90,7 @@ public:
         return shapes;
     }
 
-private:
+    private:
     std::mt19937 gen_;
     std::uniform_real_distribution<double> coord_dist_;
     std::uniform_real_distribution<double> size_dist_;
@@ -102,4 +121,4 @@ std::optional<size_t> FindHighestShape(ReplaceMe shapes) {
     return std::nullopt;
 }
 
-}  // namespace geometry::utils
+} // namespace geometry::utils
