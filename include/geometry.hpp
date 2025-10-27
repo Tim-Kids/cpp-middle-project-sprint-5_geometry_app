@@ -129,6 +129,10 @@ struct BoundingBox {
         return {(min_x + max_x) * 0.5, (min_y + max_y) * 0.5};
     }
 
+    bool operator==(const BoundingBox& other) const noexcept {
+        return max_x == other.max_x && max_y == other.max_y;
+    }
+
 };
 
 struct Line {
