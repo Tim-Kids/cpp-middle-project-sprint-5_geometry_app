@@ -1,0 +1,22 @@
+cpp-middle-project-sprint-5-main
+   ├── include
+   │   ├── convex_hull.hpp
+   │   ├── geometry.hpp
+   │   ├── intersections.hpp
+   │   ├── queries.hpp
+   │   ├── shape_utils.hpp
+   │   ├── triangulation.hpp
+   │   └── visualization.hpp
+   ├── src
+   │   ├── convex_hull.cpp
+   │   ├── main.cpp
+   │   └── visualization.cpp
+   ├── tests
+   │   ├── geometry_test.cpp
+   │   └── main.cpp
+   ├── third_party
+   │   └── blueprint.cpp
+   ├── CMakeLists.txt
+   ├── Dockerfile
+   ├── LICENSE
+   └── blueprint.txt
