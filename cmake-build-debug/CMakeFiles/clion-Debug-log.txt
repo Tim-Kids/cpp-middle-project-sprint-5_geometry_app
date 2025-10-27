@@ -1,16 +1,4 @@
 /usr/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "Unix Makefiles" -S /tmp/cpp-middle-project-sprint-5-main -B /tmp/cpp-middle-project-sprint-5-main/cmake-build-debug
--- The CXX compiler identification is GNU 15.0.1
--- Detecting CXX compiler ABI info
--- Detecting CXX compiler ABI info - done
--- Check for working CXX compiler: /usr/bin/c++ - skipped
--- Detecting CXX compile features
--- Detecting CXX compile features - done
--- Found GTest: /usr/local/lib/cmake/GTest/GTestConfig.cmake (found version "1.16.0")
-Cloning into 'cpm-src'...
-HEAD is now at d9364ce Implement #624: Use shorter hashes with CPM_SOURCE_CACHE (#631)
-HEAD is now at d9364ce Implement #624: Use shorter hashes with CPM_SOURCE_CACHE (#631)
--- Found Git: /usr/bin/git (found version "2.48.1")
--- CPM: Adding package matplotplusplus@1.2.2 (v1.2.2)
 CMake Warning at cmake-build-debug/_deps/cpm-src/cmake/CPM.cmake:80 (message):
   CPM: Your project is using an unstable development version of CPM.cmake.
   Please update to a recent release if possible.  See
@@ -19,20 +7,11 @@ Call Stack (most recent call first):
   cmake-build-debug/_deps/cpm-src/CMakeLists.txt:28 (include)
 
 
--- The C compiler identification is GNU 15.0.1
--- Detecting C compiler ABI info
--- Detecting C compiler ABI info - done
--- Check for working C compiler: /usr/bin/cc - skipped
--- Detecting C compile features
--- Detecting C compile features - done
+-- CPM: Adding package matplotplusplus@1.2.2 (v1.2.2)
 -- Could NOT find PkgConfig (missing: PKG_CONFIG_EXECUTABLE) 
 -- Could NOT find JPEG (missing: JPEG_LIBRARY JPEG_INCLUDE_DIR) 
 -- Could NOT find TIFF (missing: TIFF_LIBRARY TIFF_INCLUDE_DIR) 
--- Found ZLIB: /usr/lib/x86_64-linux-gnu/libz.so (found version "1.3.1")
 -- Could NOT find PNG (missing: PNG_LIBRARY PNG_PNG_INCLUDE_DIR) 
--- Looking for sgemm_
--- Looking for sgemm_ - not found
--- Found Threads: TRUE
 -- Could NOT find BLAS (missing: BLAS_LIBRARIES) 
 -- Could NOT find LAPACK (missing: LAPACK_LIBRARIES) 
     Reason given by package: LAPACK could not be found because dependency BLAS could not be found.
@@ -40,15 +19,7 @@ Call Stack (most recent call first):
 -- Could NOT find BLAS (missing: BLAS_LIBRARIES) 
 -- Could NOT find PkgConfig (missing: PKG_CONFIG_EXECUTABLE) 
 -- Could NOT find FFTW (missing: FFTW_INCLUDE_DIRS) 
--- Performing Test COMPILER_HAS_HIDDEN_VISIBILITY
--- Performing Test COMPILER_HAS_HIDDEN_VISIBILITY - Success
--- Performing Test COMPILER_HAS_HIDDEN_INLINE_VISIBILITY
--- Performing Test COMPILER_HAS_HIDDEN_INLINE_VISIBILITY - Success
--- Performing Test COMPILER_HAS_DEPRECATED_ATTR
+-- Configuring done (0.6s)
 Setting matplotplusplus compiler options
--- Performing Test COMPILER_HAS_DEPRECATED_ATTR - Success
--- Looking for __fbufsize
--- Looking for __fbufsize - found
--- Configuring done (105.5s)
 -- Generating done (0.0s)
 -- Build files have been written to: /tmp/cpp-middle-project-sprint-5-main/cmake-build-debug
