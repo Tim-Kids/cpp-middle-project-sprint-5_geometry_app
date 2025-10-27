@@ -510,18 +510,18 @@ struct std::formatter<std::vector<geometry::Point2D>> {
     }
 
     template<typename FormatContext>
-    auto format(const std::vector<geometry::Point2D>& v, FormatContext& ctx) const {
+    auto format(const std::vector<geometry::Point2D>& points, FormatContext& ctx) const {
 
         /* ваш код здесь */
         auto out = ctx.out();
         if(use_new_line) {
-            for(const auto& p: v) {
+            for(const auto& p: points) {
                 out = std::format_to(out, "\t{}\n", p);
             }
             return out;
         }
         bool first = true;
-        for(const auto& p: v) {
+        for(const auto& p: points) {
             if(!first)
                 out = std::format_to(out, " ");
             out   = std::format_to(out, "{}", p);
