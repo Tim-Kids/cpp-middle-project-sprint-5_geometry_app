@@ -486,47 +486,39 @@ struct std::formatter<std::vector<geometry::Point2D>> {
 
     constexpr auto parse(std::format_parse_context& ctx) {
         auto it = ctx.begin();
-
-        /* ваш код здесь */
-
         auto end = ctx.end();
-        if(it == end) {
-            return it;
-        }
-        // expect "new_line"
-        if(*it == ':') {
+        if (it != end && *it == ':') {
             ++it;
-            const char needle[] = "new_line";
-            for(char c: needle) {
-                if(it == end || *it != c) {
-                    break;
-                }
-                ++it;
+            if (std::string_view(it, end - it).starts_with("new_line")) {
+                use_new_line = true;
+                it += std::string_view("new_line").size();
             }
-            use_new_line = true;
         }
+        if (it != end && *it != '}')
+            throw std::format_error("invalid format for vector<Point2D>");
         return it;
     }
 
     template<typename FormatContext>
-    auto format(const std::vector<geometry::Point2D>& points, FormatContext& ctx) const {
-
-        /* ваш код здесь */
+    auto format(const std::vector<geometry::Point2D>& v, FormatContext& ctx) const {
         auto out = ctx.out();
-        if(use_new_line) {
-            for(const auto& p: points) {
+        if (v.empty())
+            return std::format_to(out, "[]");
+
+        if (use_new_line) {
+            out = std::format_to(out, "[\n");
+            for (const auto& p : v) {
                 out = std::format_to(out, "\t{}\n", p);
             }
-            return out;
+            return std::format_to(out, "]");
+        } else {
+            out = std::format_to(out, "[ ");
+            for (size_t i = 0; i < v.size(); ++i) {
+                out = std::format_to(out, "{}", v[i]);
+                if (i + 1 < v.size()) out = std::format_to(out, ", ");
+            }
+            return std::format_to(out, " ]");
         }
-        bool first = true;
-        for(const auto& p: points) {
-            if(!first)
-                out = std::format_to(out, " ");
-            out   = std::format_to(out, "{}", p);
-            first = false;
-        }
-        return out;
     }
 };
 

@@ -88,17 +88,12 @@ class IntersectionVisitor {
     // --- Все прочие комбинации: нет поддержки (по текущей версии файла) ---
     template<class T, class U>
     std::optional<Point2D> operator()(const T&, const U&) const {
-        throw std::logic_error("Unsupported shape combination for intersection");
+        throw std::logic_error("Пересечение фигур не поддерживается!");
     }
 };
 
 inline std::optional<Point2D> GetIntersectPoint(const Shape& shape1, const Shape& shape2) {
-    try {
-        return std::visit(IntersectionVisitor{}, shape1, shape2);
-    }
-    catch(const std::exception& e) {
-        return std::nullopt;
-    }
+    return std::visit(IntersectionVisitor{}, shape1, shape2);
 }
 
 } // namespace geometry::intersections
