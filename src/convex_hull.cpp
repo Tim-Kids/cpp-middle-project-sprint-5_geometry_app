@@ -1,5 +1,8 @@
 #include "convex_hull.hpp"
+
 #include <algorithm>
+#include <ranges>
+#include <expected>
 
 namespace geometry::convex_hull {
 
@@ -27,8 +30,7 @@ GeometryResult<std::vector<Point2D>> GrahamScan(std::span<const Point2D> points)
     std::ranges::sort(pts.begin() + 1, pts.end(),
                       [p0](const Point2D& a, const Point2D& b) {
                           double cross = (a - p0).Cross(b - p0);
-                          if(std::abs(cross) < 1e-12) // Collinear.
-                          {
+                          if(std::abs(cross) < 1e-12) {     // Collinear.
                               return p0.DistanceTo(a) < p0.DistanceTo(b);
                           }
                           return cross > 0;
@@ -50,9 +52,9 @@ GeometryResult<std::vector<Point2D>> GrahamScan(std::span<const Point2D> points)
     auto hull = std::move(st).Extract();
 
     // Rare case: all points almost collinear => minimal hull.
-    if (hull.size() < 3) {
+    if(hull.size() < 3) {
         // Fallback: take 3 extreme points to form a thin triangle
-        if (points.size() >= 3) {
+        if(points.size() >= 3) {
             std::vector<Point2D> fallback = {
                 *std::ranges::min_element(points, {}, &Point2D::x),
                 *std::ranges::max_element(points, {}, &Point2D::x),
@@ -67,4 +69,4 @@ GeometryResult<std::vector<Point2D>> GrahamScan(std::span<const Point2D> points)
 
 }
 
-}  // namespace geometry::convex_hull
+} // namespace geometry::convex_hull
