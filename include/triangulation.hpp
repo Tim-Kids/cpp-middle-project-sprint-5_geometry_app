@@ -1,5 +1,7 @@
 #pragma once
+
 #include "geometry.hpp"
+
 #include <algorithm>
 #include <format>
 #include <set>
@@ -97,52 +99,96 @@ struct Edge {
 };
 
 inline GeometryResult<std::vector<DelaunayTriangle>> DelaunayTriangulation(std::span<const Point2D> points) {
+    // Триангуляция Делоне алгоритмом Боуэра-Ватсона
+    if(points.size() < 3) {
+        return std::unexpected(GeometryError::InsufficientPoints);
+    }
 
-    /*
-    Триангуляция Делоне алгоритмом Боуэра-Ватсона
-
-    - wiki с описанием триангуляции Делоне    - https://en.wikipedia.org/wiki/Delaunay_triangulation
-    - wiki с описанием алгоритма и псевдокода - https://en.wikipedia.org/wiki/Bowyer%E2%80%93Watson_algorithm
-    */
-
-    // Создаём список для хранения текущей триангуляции и добавляем в него "Супер-треугольник",
+    // 1. Создаём список для хранения текущей триангуляции и добавляем в него "Супер-треугольник",
     // содержащий внутри себя все точки.
+    double min_x = points[0].x, max_x = points[0].x;
+    double min_y = points[0].y, max_y = points[0].y;
 
-    Point2D super1;
-    Point2D super2;
-    Point2D super3;
+    for(const auto& p: points) {
+        min_x = std::min(min_x, p.x);
+        max_x = std::max(max_x, p.x);
+        min_y = std::min(min_y, p.y);
+        max_y = std::max(max_y, p.y);
+    }
+
+    const double dx    = max_x - min_x;
+    const double dy    = max_y - min_y;
+    const double delta = std::max(dx, dy) * 10.0;
+
+    Point2D super1{min_x - delta, min_y - delta};
+    Point2D super2{min_x + 0.5 * dx, max_y + delta};
+    Point2D super3{max_x + delta, min_y - delta};
+
     std::vector<DelaunayTriangle> triangulation;
+    triangulation.emplace_back(super1, super2, super3);
 
-    /*
-    Далее
+    // 2. Алгоритм Bowyer-Watson.
+    for(const auto& p: points) {
+        //  Находятся все "плохие" треугольники (из текущей триангуляции), в чьи описанные окружности входит эта
+        //  точка(ContainsPoint); "плохими" называются треугольники, нарушающие условие Делоне(внутри окружности не
+        //  должно быть других точек)
+        std::vector<size_t> bad_idx;
+        bad_idx.reserve(triangulation.size());
+        for(size_t i = 0; i < triangulation.size(); ++i) {
+            if(triangulation[i].ContainsPoint(p)) {
+                bad_idx.push_back(i);
+            }
+        }
 
-    Цикл по всем точкам
+        // Для всех рёбер этих треугольников формируется множество polygon, причём:
+        // - Если ребро ещё не встречалось - оно добавляется в polygon.
+        // - Если ребро встречается второй раз - оно удаляется из polygon.
+        std::multiset<Edge> edge_buffer;
+        for(size_t idx: bad_idx) {
+            const auto& t                   = triangulation[idx];
+            const std::array<Edge, 3> edges = {
+                Edge{t.a, t.b},
+                Edge{t.b, t.c},
+                Edge{t.c, t.a}
+            };
+            for(const auto& e: edges) {
+                auto it = edge_buffer.find(e);
+                if(it == edge_buffer.end()) {
+                    edge_buffer.insert(e);
+                }
+                else {
+                    edge_buffer.erase(it);
+                }
+            }
+        }
 
-        Для каждой новой точки:
+        std::erase_if(triangulation, [&](const DelaunayTriangle& t) {
+            return t.ContainsPoint(p);
+        });
 
-            В цикле
-                Находятся все "плохие" треугольники (из текущей триангуляции), в чьи описанные окружности входит эта
-    точка (ContainsPoint); "плохими" называются треугольники, нарушающие условие Делоне (внутри окружности не должно
-    быть других точек);
+        // Для каждой границы "дырки" (polygonal hole) создаются новые треугольники с новой точкой: { ТочкаРебра1, ТочкаРебра2, НоваяТочка }.
+        for(const auto& edge: edge_buffer) {
+            triangulation.emplace_back(edge.p1, edge.p2, p);
+        }
+    }
 
-                Для всех рёбер этих треугольников формируется множество polygon, причём:
-                    - Если ребро ещё не встречалось - оно добавляется в polygon.
-                    - Если ребро встречается второй раз - оно удаляется из polygon.
+    // 3. Удаляем все треугольники, включающие вершины супер-треугольника.
+    std::erase_if(triangulation, [&](const DelaunayTriangle& t) {
+        const auto verts = t.vertices();
+        auto has_vertex = [&](const Point2D& v) {
+            auto close = [](const Point2D& p1, const Point2D& p2) {
+                return std::abs(p1.x - p2.x) < 1e-10 && std::abs(p1.y - p2.y) < 1e-10;
+            };
+            return close(v, super1) || close(v, super2) || close(v, super3);
+        };
+        return std::ranges::any_of(verts, has_vertex);
+    });
 
-            Получившееся множество polygon - это граница "дырки" (polygonal hole), которую нужно заполнить новыми
-    треугольниками
+    if(triangulation.empty()) {
+        return std::unexpected(GeometryError::DegenrateCase);
+    }
 
-            Теперь требуется удалить из текущей триангуляции все плохие треугольники: cur_triangulation.erase(
-    bad_triangles.contains(*it) )
-
-            Для каждой границы "дырки" (polygonal hole) создаются новые треугольники с новой точкой: { ТочкаРебра1,
-    ТочкаРебра2, НоваяТочка }.
-
-    Конец цикла
-
-    Удаляем все треугольники, включающие вершины супер-треугольника.
-    */
-    return std::unexpected(GeometryError::Unsupported);
+    return triangulation;
 }
 } // namespace geometry::triangulation
 

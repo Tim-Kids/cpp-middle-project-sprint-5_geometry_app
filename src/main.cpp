@@ -71,30 +71,24 @@ int main() {
     std::println("Generated {} random shapes", shapes.size());
 
     // Выведите индекс каждой фигуры и её высоту
-    for(auto [i, s]: views::enumerate(shapes)) {
-        auto height = std::visit([](const auto& sh) {
-            return sh.Height();
-        }, s);
-        std::println("Shape #{:02d}: height = {:.2f}", i, height);
-    }
 
     //
     // Вызываем разработанные функции
     //
-    // PrintAllIntersections(shapes[0], shapes);
+    PrintAllIntersections(shapes[0], shapes);
 
-    // PrintDistancesFromPointToShapes(Point2D{10.0, 10.0}, shapes);
+    PrintDistancesFromPointToShapes(Point2D{10.0, 10.0}, shapes);
 
-    // PerformShapeAnalysis(shapes);
+    PerformShapeAnalysis(shapes);
 
-    // PerformExtraShapeAnalysis(shapes);
+    PerformExtraShapeAnalysis(shapes);
 
     //
     // Рисуем все фигуры
     //
     // Важно: после изучения графика - нажмите Enter чтобы продолжить выполнение и построить 2ой график
     //
-    // geometry::visualization::Draw(shapes);
+    geometry::visualization::Draw(shapes);
 
     //
     // Формируем список из вершин всех фигур
@@ -102,22 +96,6 @@ int main() {
     std::vector<Point2D> points;
 
     /* ваш код здесь */
-    for(const auto& shape: shapes) {
-        std::visit([&](const auto& s) {
-            const auto verts = s.Vertices();
-            points.insert(points.end(), verts.begin(), verts.end());
-        }, shape);
-    }
-
-    // [[optional]] Remove duplicates (within a small epsilon).
-    // utils::RemoveDuplicates(points);
-
-    std::println("\nCollected {} points for convex hull", points.size());
-
-    /*std::println("Unique point count after filtering: {}", points.size());
-    for (auto& p : points)
-        std::println("  ({:.2f}, {:.2f})", p.x, p.y);*/
-
 
     //
     // Находим список точек, для построения выпуклой оболочки - convex hull - алгоритмом Грэхема
@@ -126,27 +104,13 @@ int main() {
     //
 
     /* ваш код здесь */
-    if (auto hull_res = convex_hull::GrahamScan(points)) {
-        auto& hull_points = *hull_res;
-        std::println("Convex hull has {} vertices", hull_points.size());
-        // std::println("{:new_line}", hull_points);
-
-        // Create polygon from hull and add to shapes
-        Polygon hull_poly(hull_points);
-        shapes.emplace_back(std::move(hull_poly));
-
-        std::println("Drawing convex hull together with initial shapes...");
-        // geometry::visualization::Draw(shapes); // Needs 'gnuplot' onboard installed.
-    } else {
-        std::println("Convex hull failed: error code {}", static_cast<int>(hull_res.error()));
-    }
 
     //
     // после изучения графика - нажмите Enter чтобы продолжить выполнение и построить 3ий график
     //
 
     {
-        // std::vector<Point2D> points = {{0, 0}, {10, 0}, {5, 8}, {15, 5}, {2, 12}};
+        std::vector<Point2D> points = {{0, 0}, {10, 0}, {5, 8}, {15, 5}, {2, 12}};
 
         //
         // Используйте список точек points или свой, чтобы
