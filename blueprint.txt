@@ -1,0 +1,29 @@
+
+   ├── include
+   │   ├── analysis_utils.hpp
+   │   ├── convex_hull.hpp
+   │   ├── geometry.hpp
+   │   ├── intersections.hpp
+   │   ├── queries.hpp
+   │   ├── shape_utils.hpp
+   │   ├── triangulation.hpp
+   │   └── visualization.hpp
+   ├── src
+   │   ├── convex_hull.cpp
+   │   ├── main.cpp
+   │   └── visualization.cpp
+   ├── tests
+   │   ├── analysis_utils_test.cpp
+   │   ├── geometry_test.cpp
+   │   ├── intersections_test.cpp
+   │   ├── main.cpp
+   │   ├── queries_test.cpp
+   │   ├── shape_utils_test.cpp
+   │   └── triangulation_test.cpp
+   ├── third_party
+   │   └── blueprint.cpp
+   ├── CMakeLists.txt
+   ├── Dockerfile
+   ├── LICENSE
+   ├── README.md
+   └── blueprint.txt

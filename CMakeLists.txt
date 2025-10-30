@@ -37,7 +37,7 @@ file(GLOB SRC_FILES "${CMAKE_SOURCE_DIR}/src/*.cpp")
 list(REMOVE_ITEM SRC_FILES "${CMAKE_SOURCE_DIR}/src/main.cpp")
 
 # Создаём статическую библиотеку
-add_library(${PROJECT_NAME}_imp STATIC "${CMAKE_SOURCE_DIR}/src/main.cpp" ${SRC_FILES} ${HEADER_FILES})
+add_library(${PROJECT_NAME}_imp STATIC #[["${CMAKE_SOURCE_DIR}/src/main.cpp"]] ${SRC_FILES} ${HEADER_FILES})
 
 # Добавляем в проект используемые сторонние библиотеки
 target_include_directories(${PROJECT_NAME}_imp
@@ -50,8 +50,11 @@ target_include_directories(${PROJECT_NAME}_imp
 target_link_libraries(${PROJECT_NAME}_imp PRIVATE matplot)
 
 # Создаём исполняемый таргет и линкуем к нему статическую библиотеку
-add_executable(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/src/main.cpp")
+add_executable(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/src/main.cpp" include/analysis_utils.hpp)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_imp)
+
+# Хелпер для построения дерева каталогов проекта.
+add_executable(blueprint "${CMAKE_CURRENT_SOURCE_DIR}/third_party/blueprint.cpp")
 
 #
 # Тесты
@@ -60,7 +63,8 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_imp)
 # Рекурсивно ищем все используемые в тестах .cpp файлы
 file(GLOB TEST_SRC_FILES "${CMAKE_SOURCE_DIR}/tests/*.cpp")
 
-add_executable(unit_tests "${TEST_SRC_FILES}")
+add_executable(unit_tests "${TEST_SRC_FILES}"
+        tests/analysis_utils_test.cpp)
 target_link_libraries(unit_tests PRIVATE ${PROJECT_NAME}_imp GTest::GTest GTest::Main)
 target_include_directories(unit_tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
