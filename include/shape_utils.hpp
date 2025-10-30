@@ -113,7 +113,7 @@ inline std::vector<std::pair<Shape, Shape>> FindAllCollisions(std::span<const Sh
     return collisions;
 }
 
-std::optional<size_t> FindHighestShape(std::span<const Shape> shapes) {
+inline std::optional<size_t> FindHighestShape(std::span<const Shape> shapes) {
     if(shapes.empty()) {
         return std::nullopt;
     }

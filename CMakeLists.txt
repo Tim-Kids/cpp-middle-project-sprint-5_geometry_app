@@ -50,9 +50,10 @@ target_include_directories(${PROJECT_NAME}_imp
 target_link_libraries(${PROJECT_NAME}_imp PRIVATE matplot)
 
 # Создаём исполняемый таргет и линкуем к нему статическую библиотеку
-add_executable(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/src/main.cpp")
+add_executable(${PROJECT_NAME} "${CMAKE_SOURCE_DIR}/src/main.cpp" include/analysis_utils.h)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${PROJECT_NAME}_imp)
 
+# Хелпер для построения дерева каталогов проекта.
 add_executable(blueprint "${CMAKE_CURRENT_SOURCE_DIR}/third_party/blueprint.cpp")
 
 #
