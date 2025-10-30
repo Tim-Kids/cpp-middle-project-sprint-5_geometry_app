@@ -41,3 +41,4 @@ range-v3*
 .githooks
 .devcontainer
 conanfile.py
+clion-Debug*
