@@ -62,14 +62,14 @@ int main() {
     // 7. Находим список точек, для построения выпуклой оболочки - convex hull - алгоритмом Грэхема.
     // Создаём из них объект класса `Polygon` и добавляем его в список shapes. Рисуем все фигуры.
     if(auto hull_res = convex_hull::GrahamScan(points)) {
-        const auto& hull_pts = *hull_res;
-        std::println("\nConvex hull has {} vertices", hull_pts.size());
-        for(const auto& p: hull_res.value()) {
+        const auto& hull_points = *hull_res;
+        std::println("\nConvex hull has {} vertices", hull_points.size());
+        for(const auto& p: hull_points) {
             std::println("\t{}", p);
         }
 
         // Добавим оболочку как Polygon и перерисуем
-        Polygon hull_poly(hull_pts);
+        Polygon hull_poly(hull_points);
         shapes.emplace_back(std::move(hull_poly));
         visualization::Draw(shapes);
     }
@@ -77,15 +77,14 @@ int main() {
         std::println("Convex hull failed: error code {}", static_cast<int>(hull_res.error()));
     }
 
-    // после изучения графика - нажмите Enter чтобы продолжить выполнение и построить 3ий график
+    // После изучения графика - нажмите Enter чтобы продолжить выполнение и построить 3ий график.
     {
         // Используйте список точек points или свой, чтобы выполнить алгоритм триангуляции Делоне алгоритмом Боуэра-Ватсона
         // После успешного завершения алгоритма - выведите результат для проверки используя visualization::Draw.
         std::vector<Point2D> pts = {{0, 0}, {10, 0}, {5, 8}, {15, 5}, {2, 12}};
         if(auto tri_res = triangulation::DelaunayTriangulation(pts)) {
             std::println("\nDelaunay produced {} triangles", (*tri_res).size());
-            visualization::Draw(
-                std::span<triangulation::DelaunayTriangle>((*tri_res).begin(), (*tri_res).end()));
+            visualization::Draw(std::span((*tri_res).begin(), (*tri_res).end()));
         }
         else {
             std::println("Delaunay failed: error code {}", static_cast<int>(tri_res.error()));

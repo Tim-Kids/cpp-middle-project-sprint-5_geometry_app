@@ -44,4 +44,4 @@ class StackForGrahamScan {
 
 [[nodiscard]] GeometryResult<std::vector<Point2D>> GrahamScan(std::span<const Point2D> points) noexcept;
 
-}  // namespace geometry::convex_hull
+} // namespace geometry::convex_hull

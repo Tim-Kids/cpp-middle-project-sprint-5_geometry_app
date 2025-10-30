@@ -1,4 +1,5 @@
 #pragma once
+
 #include "geometry.hpp"
 #include <algorithm>
 #include <optional>
@@ -11,11 +12,6 @@ struct Multilambda: Ts... {
     using Ts::operator()...;
 };
 
-/*
- * Класс для поиска расстояния от точки до фигуры
- *
- * Требуется организовать возможность нахождения расстояния для всех возможных фигур типа-суммы Shape
- */
 inline double Clamp(double v, double lo, double hi) {
     return std::max(lo, std::min(v, hi));
 }
@@ -73,8 +69,6 @@ struct PointToShapeDistanceVisitor {
     explicit PointToShapeDistanceVisitor(const Point2D& p) :
         point(p) {
     }
-
-    /* ваш код здесь */
 
     double operator()(const Point2D& q) const {
         return point.DistanceTo(q);
@@ -137,22 +131,7 @@ struct PointToShapeDistanceVisitor {
     }
 };
 
-/*
- * Класс для поиска расстояния между двумя фигурами
- *
- * Требуется организовать возможность нахождения расстояния только для следующих комбинаций фигур:
- *    - Any    & Point
- *    - Line   & Line
- *    - Circle & Circle
- *
- * Важно: вы можете выбрать любой метод нахождения расстояния, даже если он даёт не точный результат
- *
- * Для всех остальных требуется вернуть пустое значение
- */
 struct ShapeToShapeDistanceVisitor {
-
-    /* ваш код здесь */
-
     // Any & Point
     std::optional<double> operator()(const Shape& s, const Point2D& p) const {
         return std::visit(PointToShapeDistanceVisitor{p}, s);
@@ -182,33 +161,24 @@ struct ShapeToShapeDistanceVisitor {
         return std::max(0.0, gap);
     }
 
-    // Все прочее — неподдерживаемо
+    // Все прочее — неподдерживаемо.
     template<class T, class U>
     std::optional<double> operator()(const T&, const U&) const {
         return std::nullopt;
     }
 };
 
-/*
- * Функции-помощники
- */
 inline double DistanceToPoint(const Shape& shape, const Point2D& point) {
-
-    /* ваш код здесь */
     return std::visit(PointToShapeDistanceVisitor{point}, shape);
 }
 
 inline BoundingBox GetBoundBox(const Shape& shape) {
-
-    /* ваш код здесь */
     return std::visit([](const auto& s) {
         return s.BoundBox();
     }, shape);
 }
 
 inline double GetHeight(const Shape& shape) {
-
-    /* ваш код здесь */
     return std::visit([](const auto& s) {
         return s.Height();
     }, shape);
@@ -235,7 +205,6 @@ inline std::optional<double> DistanceBetweenShapes(const Shape& shape1, const Sh
     if(std::holds_alternative<Circle>(shape1) && std::holds_alternative<Circle>(shape2)) {
         return ShapeToShapeDistanceVisitor{}(std::get<Circle>(shape1), std::get<Circle>(shape2));
     }
-
 
     // Неподдерживаемо.
     return std::nullopt;

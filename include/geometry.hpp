@@ -6,28 +6,24 @@
 #include <expected>
 #include <format>
 #include <numbers>
-#include <optional>
-#include <print>
 #include <ranges>
 #include <variant>
 #include <vector>
 
 namespace geometry {
 
-/*
- * Добавьте к методам класса Point2D и Lines2DDyn все необходимые аттрибуты и спецификаторы
- * Важно: Возвращаемый тип и принимаемые аргументы менять не нужно
- */
 struct Point2D {
     double x, y;
 
     constexpr Point2D() noexcept :
         x(0),
-        y(0) {}
+        y(0) {
+    }
 
     constexpr Point2D(double x_, double y_) noexcept :
         x(x_),
-        y(y_) {}
+        y(y_) {
+    }
 
     // Comparison
     [[nodiscard]] constexpr bool operator<(const Point2D& other) const noexcept {
@@ -191,19 +187,6 @@ struct Triangle {
         return {minx, miny, maxx, maxy};
     }
 
-    //
-    // Обратите внимание! В методе Lines(), в отличие от Vertices(), координаты точек замыкаются на начало:
-    // a.x, b.x, c.x а затем идёт снова первая вершина a.x
-    //
-    // Это необходимо для правильного рисования фигур через gnuplot, который формирует линии, используя пары точек.
-    // В случае с Triangle будут составлены такие пары точек:
-    //      - { a, b }
-    //      - { b, c }
-    //      - { c, a }
-    //
-
-    /* ваш код здесь */
-
     [[nodiscard]] Point2D Center() const noexcept {
         return (a + b + c) / 3.0;
     }
@@ -323,10 +306,6 @@ struct Circle {
         return center_p;
     }
 
-    //
-    // Должны быть сделана по аналогии с RegularPolygon::Vertices
-    //
-
     [[nodiscard]] std::vector<Point2D> Vertices(size_t N = 30) const {
         std::vector<Point2D> pts;
         if(N == 0) {
@@ -408,10 +387,6 @@ class Polygon {
         return bounding_box_;
     }
 
-    //
-    // Должны быть сделана по аналогии с RegularPolygon::Vertices
-    //
-
     [[nodiscard]] std::vector<Point2D> Vertices(size_t N = 30) const {
         return points_;
     }
@@ -476,11 +451,11 @@ struct std::formatter<std::vector<geometry::Point2D>> {
     bool use_new_line = false;
 
     constexpr auto parse(std::format_parse_context& ctx) {
-        auto it = ctx.begin();
+        auto it  = ctx.begin();
         auto end = ctx.end();
-        if (it != end && *it == ':') {
+        if(it != end && *it == ':') {
             ++it;
-            if (std::string_view(it, end - it).starts_with("new_line")) {
+            if(std::string_view(it, end - it).starts_with("new_line")) {
                 use_new_line = true;
                 it += std::string_view("new_line").size();
             }
@@ -494,12 +469,12 @@ struct std::formatter<std::vector<geometry::Point2D>> {
     template<typename FormatContext>
     auto format(const std::vector<geometry::Point2D>& points, FormatContext& ctx) const {
         auto out = ctx.out();
-        if (points.empty())
+        if(points.empty())
             return std::format_to(out, "[]");
 
-        if (use_new_line) {
+        if(use_new_line) {
             out = std::format_to(out, "[\n");
-            for (const auto& p : points) {
+            for(const auto& p: points) {
                 out = std::format_to(out, "\t{}\n", p);
             }
             return std::format_to(out, "]");

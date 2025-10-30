@@ -1,13 +1,10 @@
 #include <gtest/gtest.h>
+
 #include "shape_utils.hpp"
 
 using namespace geometry;
 using namespace geometry::utils;
-using geometry::queries::BoundingBoxesOverlap;
 
-// ------------------------------------------------------
-//  Helper: quick builder for common shapes.
-// ------------------------------------------------------
 static Rectangle makeRect(double x, double y, double w, double h) {
     return Rectangle{Point2D{x, y}, w, h};
 }
@@ -15,10 +12,6 @@ static Rectangle makeRect(double x, double y, double w, double h) {
 static Circle makeCircle(double x, double y, double r) {
     return Circle{Point2D{x, y}, r};
 }
-
-// ------------------------------------------------------
-//  Tests for FindAllCollisions().
-// ------------------------------------------------------
 
 TEST(FindAllCollisions, TwoRectanglesOverlap) {
     std::vector<Shape> shapes;
@@ -32,7 +25,7 @@ TEST(FindAllCollisions, TwoRectanglesOverlap) {
     ASSERT_EQ(collisions.size(), 1u);
 
     const auto& [a,b] = collisions.front();
-    EXPECT_TRUE(BoundingBoxesOverlap(a,b));
+    EXPECT_TRUE(queries::BoundingBoxesOverlap(a,b));
 }
 
 TEST(FindAllCollisions, CirclesTouchAndSeparated) {
@@ -45,7 +38,7 @@ TEST(FindAllCollisions, CirclesTouchAndSeparated) {
 
     // Only first two overlap in AABB.
     ASSERT_EQ(collisions.size(), 1u);
-    EXPECT_TRUE(BoundingBoxesOverlap(collisions[0].first, collisions[0].second));
+    EXPECT_TRUE(queries::BoundingBoxesOverlap(collisions[0].first, collisions[0].second));
 }
 
 TEST(FindAllCollisions, MixedShapesNoOverlap) {
@@ -70,6 +63,7 @@ TEST(FindAllCollisions, DetectMultiplePairs) {
     // Expected pairs: (0,1), (0,2), (1,2).
     EXPECT_EQ(collisions.size(), 3u);
 
-    for (auto& [a,b] : collisions)
-        EXPECT_TRUE(BoundingBoxesOverlap(a,b));
+    for(auto& [a,b]: collisions) {
+        EXPECT_TRUE(queries::BoundingBoxesOverlap(a,b));
+    }
 }

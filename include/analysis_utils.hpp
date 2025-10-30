@@ -7,6 +7,7 @@
 
 #include <span>
 #include <ranges>
+#include <print>
 
 using namespace geometry;
 

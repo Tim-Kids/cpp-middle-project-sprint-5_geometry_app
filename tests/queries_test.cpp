@@ -5,10 +5,6 @@
 using namespace geometry;
 using namespace geometry::queries;
 
-// ------------------------------------------------------
-//  Point => Shape distances
-// ------------------------------------------------------
-
 TEST(PointToShapeDistance, Line) {
     Line l{{0, 0}, {10, 0}};
     Point2D p{5, 5};
@@ -36,10 +32,6 @@ TEST(PointToShapeDistance, RectangleOutside) {
     double d = std::visit(PointToShapeDistanceVisitor{p}, Shape{r});
     EXPECT_NEAR(d, 1.0, 1e-9);
 }
-
-// ------------------------------------------------------
-//  Shape <=> Shape distances
-// ------------------------------------------------------
 
 TEST(ShapeToShapeDistance, LineLine_NonParallel) {
     Line a{{0, 0}, {3, 0}};
@@ -75,10 +67,6 @@ TEST(ShapeToShapeDistance, Unsupported_ReturnsNullopt) {
     auto d = ShapeToShapeDistanceVisitor{}(r, t);
     EXPECT_FALSE(d.has_value());
 }
-
-// ------------------------------------------------------
-//  Helpers
-// ------------------------------------------------------
 
 TEST(Helpers, BoundingBoxesOverlapAndGetHeight) {
     Rectangle r1{{0, 0}, 2, 2};

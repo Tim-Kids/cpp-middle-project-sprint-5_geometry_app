@@ -17,7 +17,7 @@ GeometryResult<std::vector<Point2D>> GrahamScan(std::span<const Point2D> points)
         return std::unexpected(GeometryError::InsufficientPoints);
     }
 
-    std::vector<Point2D> pts(points.begin(), points.end());
+    std::vector pts(points.begin(), points.end());
 
     // 1. Find the lowest, then leftmost point (pivot).
     auto it0 = std::ranges::min_element(pts, {}, [](const Point2D& p) {

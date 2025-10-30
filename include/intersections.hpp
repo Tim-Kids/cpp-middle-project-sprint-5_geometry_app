@@ -58,7 +58,7 @@ class IntersectionVisitor {
         const double a    = (r0 * r0 - r1 * r1 + d * d) / (2.0 * d);
         const double h_sq = r0 * r0 - a * a;
         if(h_sq < 0.0) {
-            return std::nullopt;     // Из-за численной ошибки.
+            return std::nullopt; // Из-за численной ошибки.
         }
         const double h = std::sqrt(std::max(0.0, h_sq));
 
@@ -79,7 +79,8 @@ class IntersectionVisitor {
     // --- Все прочие комбинации: нет поддержки (по текущей версии файла) ---
     template<class T, class U>
     std::optional<Point2D> operator()(const T&, const U&) const {
-        throw std::logic_error("Пересечение фигур не поддерживается! Фигуры: "s + typeid(T).name() + ", " + typeid(U).name());
+        throw std::logic_error(
+            "Пересечение фигур не поддерживается! Фигуры: "s + typeid(T).name() + ", " + typeid(U).name());
     }
 };
 

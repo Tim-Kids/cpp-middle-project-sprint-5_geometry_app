@@ -1,7 +1,3 @@
-//
-// Created by timkids on 10/11/25.
-//
-
 #include <filesystem>
 #include <fstream>
 #include <print>
@@ -12,15 +8,13 @@
 
 namespace fs = std::filesystem;
 
-// ---------------------------------------------------------------------------
-// Filtering logic
-// ---------------------------------------------------------------------------
 bool should_ignore(const fs::directory_entry& entry) {
     const std::string name = entry.path().filename().string();
 
     // Ignore hidden and build-system artifacts.
-    if(name.starts_with('.') || name.starts_with("cmake-"))
+    if(name.starts_with('.') || name.starts_with("cmake-")) {
         return true;
+    }
 
     // Ignore specific unwanted files.
     static constexpr std::string_view ignored_files[] = {
@@ -32,18 +26,13 @@ bool should_ignore(const fs::directory_entry& entry) {
     });
 }
 
-// ---------------------------------------------------------------------------
-// Recursive pretty-printer
-// ---------------------------------------------------------------------------
 void print_dir_tree(const fs::path& root, std::ofstream& out, const std::string& prefix = "") {
-    // Gather visible entries only
     std::vector<fs::directory_entry> entries;
     for(const auto& entry: fs::directory_iterator(root)) {
         if(!should_ignore(entry))
             entries.emplace_back(entry);
     }
 
-    // Sort directories first, then alphabetically.
     auto sort_pred = [](const fs::directory_entry& a, const fs::directory_entry& b) {
         if(a.is_directory() != b.is_directory()) {
             return a.is_directory() > b.is_directory();
@@ -52,7 +41,6 @@ void print_dir_tree(const fs::path& root, std::ofstream& out, const std::string&
     };
     std::ranges::sort(entries, sort_pred);
 
-    // Print each entry.
     for(size_t i = 0; i < entries.size(); ++i) {
         const auto& entry     = entries[i];
         bool is_last          = (i == entries.size() - 1);
@@ -69,9 +57,6 @@ void print_dir_tree(const fs::path& root, std::ofstream& out, const std::string&
     }
 }
 
-// ---------------------------------------------------------------------------
-// Entry point
-// ---------------------------------------------------------------------------
 int main(int argc, char* argv[]) {
     if(argc < 2) {
         std::println("Usage: {} <directory> [output_file]", argv[0]);

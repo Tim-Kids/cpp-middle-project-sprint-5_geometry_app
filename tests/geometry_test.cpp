@@ -4,8 +4,6 @@
 
 using namespace geometry;
 
-// ---- Point2D --------------------------------------------------------
-
 TEST(Point2D, BasicArithmetic) {
     Point2D a{3, 4};
     Point2D b{1, 2};
@@ -30,8 +28,6 @@ TEST(Point2D, LengthAndNormalize) {
     EXPECT_NEAR(n.y, 0.8, 1e-9);
 }
 
-// ---- BoundingBox ----------------------------------------------------
-
 TEST(BoundingBox, BasicOps) {
     BoundingBox box{0, 0, 4, 3};
     EXPECT_DOUBLE_EQ(box.Width(), 4.0);
@@ -43,8 +39,6 @@ TEST(BoundingBox, BasicOps) {
     BoundingBox far{10, 10, 20, 20};
     EXPECT_FALSE(box.Overlaps(far));
 }
-
-// ---- Line -----------------------------------------------------------
 
 TEST(Line, Geometry) {
     Line l{{0,0},{3,4}};
@@ -58,16 +52,12 @@ TEST(Line, Geometry) {
     EXPECT_DOUBLE_EQ(bb.Height(), 4.0);
 }
 
-// ---- Triangle -------------------------------------------------------
-
 TEST(Triangle, AreaAndCenter) {
     Triangle t{{0,0},{4,0},{0,3}};
     EXPECT_NEAR(t.Area(), 6.0, 1e-9);
     EXPECT_EQ(t.Center(), (Point2D{(0+4+0)/3.0,(0+0+3)/3.0}));
     EXPECT_NEAR(t.Height(), 3.0, 1e-9);
 }
-
-// ---- Rectangle ------------------------------------------------------
 
 TEST(Rectangle, BasicGeometry) {
     Rectangle r{{0,0}, 4, 2};
@@ -76,8 +66,6 @@ TEST(Rectangle, BasicGeometry) {
     EXPECT_EQ(r.BoundBox(), (BoundingBox{0,0,4,2}));
     EXPECT_NEAR(r.Height(), 2.0, 1e-9);
 }
-
-// ---- RegularPolygon -------------------------------------------------
 
 TEST(RegularPolygon, VerticesAndBoundBox) {
     RegularPolygon p{{0,0}, 1.0, 4}; // square-like
@@ -88,8 +76,6 @@ TEST(RegularPolygon, VerticesAndBoundBox) {
     EXPECT_NEAR(bb.Height(), 2.0, 1e-9);
 }
 
-// ---- Circle ---------------------------------------------------------
-
 TEST(Circle, BoundBoxAndVertices) {
     Circle c{{0,0}, 5.0};
     auto bb = c.BoundBox();
@@ -98,8 +84,6 @@ TEST(Circle, BoundBoxAndVertices) {
     EXPECT_EQ(verts.size(), 20);
     EXPECT_NEAR(c.Height(), 5.0, 1e-9);
 }
-
-// ---- Polygon --------------------------------------------------------
 
 TEST(Polygon, CenterAndBoundBox) {
     std::vector<Point2D> pts{{0,0},{4,0},{4,3},{0,3}};

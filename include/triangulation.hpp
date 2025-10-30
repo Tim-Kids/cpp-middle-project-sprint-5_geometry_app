@@ -175,7 +175,7 @@ inline GeometryResult<std::vector<DelaunayTriangle>> DelaunayTriangulation(std::
     // 3. Удаляем все треугольники, включающие вершины супер-треугольника.
     std::erase_if(triangulation, [&](const DelaunayTriangle& t) {
         const auto verts = t.vertices();
-        auto has_vertex = [&](const Point2D& v) {
+        auto has_vertex  = [&](const Point2D& v) {
             auto close = [](const Point2D& p1, const Point2D& p2) {
                 return std::abs(p1.x - p2.x) < 1e-10 && std::abs(p1.y - p2.y) < 1e-10;
             };
