@@ -258,10 +258,10 @@ struct RegularPolygon {
     double radius;
     int sides;
 
-    constexpr RegularPolygon(Point2D center, double radius_, int sides_) noexcept :
+    constexpr RegularPolygon(Point2D center, double radius, int sides) noexcept :
         center_p(center),
-        radius(radius_),
-        sides(sides_) {
+        radius(radius),
+        sides(sides) {
     }
 
     [[nodiscard]] double Height() const noexcept {
@@ -306,9 +306,9 @@ struct Circle {
     Point2D center_p;
     double radius;
 
-    constexpr Circle(Point2D center, double radius_) noexcept :
+    constexpr Circle(Point2D center, double radius) noexcept :
         center_p(center),
-        radius(radius_) {
+        radius(radius) {
     }
 
     [[nodiscard]] BoundingBox BoundBox() const noexcept {

@@ -1,7 +1,11 @@
 #pragma once
 
-#include <algorithm>
-#include <print>
+#include "geometry.hpp"
+#include "intersections.hpp"
+#include "queries.hpp"
+#include "shape_utils.hpp"
+
+#include <span>
 #include <ranges>
 
 using namespace geometry;
@@ -21,7 +25,7 @@ inline void PrintAllIntersections(const Shape& base, std::span<const Shape> othe
 
     try {
         for(auto&& [idx, s]: filtered) {
-            if(auto ip = GetIntersectPoint(base, s); ip.has_value()) {
+            if(auto ip = GetIntersectPoint(base, s); ip) {
                 std::println("Пересечение найдено в точке {} между фигурой #{} и базовой", *ip, idx);
             }
             else {

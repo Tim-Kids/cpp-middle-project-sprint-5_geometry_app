@@ -5,13 +5,16 @@
 #include "shape_utils.hpp"
 #include "triangulation.hpp"
 #include "visualization.hpp"
-#include "analysis_utils.h"
+#include "analysis_utils.hpp"
 
 #include <algorithm>
 #include <print>
 #include <ranges>
 
 using namespace geometry;
+
+namespace rs = std::ranges;
+namespace rv = std::ranges::views;
 
 int main() {
     utils::ShapeGenerator generator(-50.0, 50.0, 5.0, 25.0);
@@ -34,7 +37,7 @@ int main() {
 
     // 4. Рисуем все фигуры. Требуется поддержка gnuplot.
     // Важно: после изучения графика - нажмите Enter чтобы продолжить выполнение и построить 2ой график
-    // visualization::Draw(shapes);
+    visualization::Draw(shapes);
 
     // 5. Формируем список из вершин всех фигур
     std::vector<Point2D> points;
@@ -68,7 +71,7 @@ int main() {
         // Добавим оболочку как Polygon и перерисуем
         Polygon hull_poly(hull_pts);
         shapes.emplace_back(std::move(hull_poly));
-        // visualization::Draw(shapes);
+        visualization::Draw(shapes);
     }
     else {
         std::println("Convex hull failed: error code {}", static_cast<int>(hull_res.error()));
@@ -81,8 +84,8 @@ int main() {
         std::vector<Point2D> pts = {{0, 0}, {10, 0}, {5, 8}, {15, 5}, {2, 12}};
         if(auto tri_res = triangulation::DelaunayTriangulation(pts)) {
             std::println("\nDelaunay produced {} triangles", (*tri_res).size());
-            // visualization::Draw(
-                // std::span<const triangulation::DelaunayTriangle>((*tri_res).begin(), (*tri_res).end()));
+            visualization::Draw(
+                std::span<triangulation::DelaunayTriangle>((*tri_res).begin(), (*tri_res).end()));
         }
         else {
             std::println("Delaunay failed: error code {}", static_cast<int>(tri_res.error()));
