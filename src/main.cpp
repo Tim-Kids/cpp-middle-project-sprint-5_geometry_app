@@ -61,8 +61,8 @@ void PerformShapeAnalysis(std::span<const Shape> shapes) {
     auto collisions = utils::FindAllCollisions(shapes);
     if (!collisions.empty()) {
         std::println("\nОбнаружены коллизии (пересечения Bounding Box):");
-        std::ranges::for_each(collisions, [](auto&& pair) {
-            const auto& [s1, s2] = pair;
+        std::ranges::for_each(collisions, [](auto&& pair_of_shapes) {
+            const auto& [s1, s2] = pair_of_shapes;
             std::println("  {} пересекается с {}", s1, s2);
         });
     } else {
@@ -178,7 +178,7 @@ int main() {
 
         // Добавим оболочку как Polygon и перерисуем
         Polygon hull_poly(hull_pts);
-        shapes.push_back(hull_poly);
+        shapes.emplace_back(std::move(hull_poly));
         // visualization::Draw(shapes);
     }
     else {

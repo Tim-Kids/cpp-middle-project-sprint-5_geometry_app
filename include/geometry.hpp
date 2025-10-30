@@ -457,15 +457,6 @@ enum class GeometryError { Unsupported, NoIntersection, InvalidInput, DegenrateC
 template<typename T>
 using GeometryResult = std::expected<T, GeometryError>;
 
-/*
- * В коде везде используется ReplaceMe. Ваша задача - удалить ReplaceMe и везде вместо него
- использовать наиболее подходящий тип для решения задачи
- */
-
-struct ReplaceMe {
-    ReplaceMe(std::vector<Shape>) {}
-};
-
 } // namespace geometry
 
 template<>
@@ -494,28 +485,32 @@ struct std::formatter<std::vector<geometry::Point2D>> {
                 it += std::string_view("new_line").size();
             }
         }
-        if (it != end && *it != '}')
+        if(it != end && *it != '}') {
             throw std::format_error("invalid format for vector<Point2D>");
+        }
         return it;
     }
 
     template<typename FormatContext>
-    auto format(const std::vector<geometry::Point2D>& v, FormatContext& ctx) const {
+    auto format(const std::vector<geometry::Point2D>& points, FormatContext& ctx) const {
         auto out = ctx.out();
-        if (v.empty())
+        if (points.empty())
             return std::format_to(out, "[]");
 
         if (use_new_line) {
             out = std::format_to(out, "[\n");
-            for (const auto& p : v) {
+            for (const auto& p : points) {
                 out = std::format_to(out, "\t{}\n", p);
             }
             return std::format_to(out, "]");
-        } else {
+        }
+        else {
             out = std::format_to(out, "[ ");
-            for (size_t i = 0; i < v.size(); ++i) {
-                out = std::format_to(out, "{}", v[i]);
-                if (i + 1 < v.size()) out = std::format_to(out, ", ");
+            for(size_t i = 0; i < points.size(); ++i) {
+                out = std::format_to(out, "{}", points[i]);
+                if(i + 1 < points.size()) {
+                    out = std::format_to(out, ", ");
+                }
             }
             return std::format_to(out, " ]");
         }
@@ -600,5 +595,20 @@ struct std::formatter<geometry::Polygon> {
         }
 
         return std::format_to(out, "]");
+    }
+};
+
+template<>
+struct std::formatter<geometry::Shape> {
+    constexpr auto parse(std::format_parse_context& ctx) const {
+        return ctx.begin();
+    }
+
+    template<typename FormatContext>
+    auto format(const geometry::Shape& shape, FormatContext& ctx) const {
+        auto out = ctx.out();
+        return std::visit([&](const auto& s) {
+            return std::format_to(out, "{}", s);
+        }, shape);
     }
 };
