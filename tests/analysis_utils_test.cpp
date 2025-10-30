@@ -21,17 +21,17 @@ static std::string CaptureOutput(const std::function<void()>& func) {
 
 TEST(AnalysisUtils, PrintAllIntersections_Basic) {
     Line l1{{0, 0}, {10, 0}};
-    Line l2{{5, -5}, {5, 5}};      // Есть пересечение с l1
-    Circle c{{20, 20}, 5};         // Нет пересечения с l1.
+    Line l2{{5, -5}, {5, 5}};      // Р•СЃС‚СЊ РїРµСЂРµСЃРµС‡РµРЅРёРµ СЃ l1
+    Circle c{{20, 20}, 5};         // РќРµС‚ РїРµСЂРµСЃРµС‡РµРЅРёСЏ СЃ l1.
     std::vector<Shape> shapes = {l1, l2, c};
 
     auto output = CaptureOutput([&]() {
         PrintAllIntersections(shapes[0], shapes);
     });
 
-    EXPECT_TRUE(output.find("Пересечение найдено") != std::string::npos)
+    EXPECT_TRUE(output.find("РџРµСЂРµСЃРµС‡РµРЅРёРµ РЅР°Р№РґРµРЅРѕ") != std::string::npos)
         << "Should detect intersection between l1 and l2";
-    EXPECT_TRUE(output.find("не пересекаются") == std::string::npos)
+    EXPECT_TRUE(output.find("РЅРµ РїРµСЂРµСЃРµРєР°СЋС‚СЃСЏ") == std::string::npos)
         << "Should report no intersection for unrelated shape";
 }
 
@@ -48,14 +48,14 @@ TEST(AnalysisUtils, PrintDistancesFromPointToShapes_NoCrash) {
         PrintDistancesFromPointToShapes(Point2D{2.0, 2.0}, shapes);
     });
 
-    EXPECT_NE(output.find("Расстояние"), std::string::npos)
+    EXPECT_NE(output.find("Р Р°СЃСЃС‚РѕСЏРЅРёРµ"), std::string::npos)
         << "Output should contain distances";
 }
 
 TEST(AnalysisUtils, PerformShapeAnalysis_NoCrashAndContainsKeywords) {
     std::vector<Shape> shapes = {
         Rectangle{{0, 0}, 2, 2},
-        Rectangle{{1, 1}, 2, 2},   // Пересекается с предыдущим.
+        Rectangle{{1, 1}, 2, 2},   // РџРµСЂРµСЃРµРєР°РµС‚СЃСЏ СЃ РїСЂРµРґС‹РґСѓС‰РёРј.
         Circle{{10, 10}, 1}
     };
 
@@ -65,7 +65,7 @@ TEST(AnalysisUtils, PerformShapeAnalysis_NoCrashAndContainsKeywords) {
 
     EXPECT_NE(output.find("Shape Analysis"), std::string::npos);
     EXPECT_NE(output.find("Bounding Box"), std::string::npos);
-    EXPECT_NE(output.find("высота"), std::string::npos);
+    EXPECT_NE(output.find("РІС‹СЃРѕС‚Р°"), std::string::npos);
 }
 
 TEST(AnalysisUtils, PerformExtraShapeAnalysis_MinMaxPrinted) {
@@ -80,20 +80,20 @@ TEST(AnalysisUtils, PerformExtraShapeAnalysis_MinMaxPrinted) {
         PerformExtraShapeAnalysis(shapes);
     });
 
-    EXPECT_NE(output.find("Минимальная высота"), std::string::npos);
-    EXPECT_NE(output.find("Максимальная высота"), std::string::npos);
+    EXPECT_NE(output.find("РњРёРЅРёРјР°Р»СЊРЅР°СЏ РІС‹СЃРѕС‚Р°"), std::string::npos);
+    EXPECT_NE(output.find("РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РІС‹СЃРѕС‚Р°"), std::string::npos);
 }
 
 TEST(AnalysisUtils, StressTest_RandomShapesPerformance) {
     ShapeGenerator generator(-100.0, 100.0, 5.0, 25.0);
 
-    // Генерируем 100 фигур.
+    // Р“РµРЅРµСЂРёСЂСѓРµРј 100 С„РёРіСѓСЂ.
     constexpr size_t kShapeCount = 100;
     std::vector<Shape> shapes = generator.GenerateShapes(kShapeCount);
 
     ASSERT_EQ(shapes.size(), kShapeCount);
 
-    // Профилируем.
+    // РџСЂРѕС„РёР»РёСЂСѓРµРј.
     auto start = std::chrono::steady_clock::now();
 
     EXPECT_NO_THROW({
@@ -107,7 +107,7 @@ TEST(AnalysisUtils, StressTest_RandomShapesPerformance) {
     auto duration_ms =
         std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count();
 
-    // Проверяем,что укалдываемся в тайминг - цифра взята, исходя из аппаратных возможностей.
+    // РџСЂРѕРІРµСЂСЏРµРј,С‡С‚Рѕ СѓРєР°Р»РґС‹РІР°РµРјСЃСЏ РІ С‚Р°Р№РјРёРЅРі - С†РёС„СЂР° РІР·СЏС‚Р°, РёСЃС…РѕРґСЏ РёР· Р°РїРїР°СЂР°С‚РЅС‹С… РІРѕР·РјРѕР¶РЅРѕСЃС‚РµР№.
     EXPECT_LT(duration_ms, 500)
         << "Analysis utilities took too long to process random shapes (" << duration_ms << " ms)";
 }

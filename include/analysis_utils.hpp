@@ -27,10 +27,10 @@ inline void PrintAllIntersections(const Shape& base, std::span<const Shape> othe
     try {
         for(auto&& [idx, s]: filtered) {
             if(auto ip = GetIntersectPoint(base, s); ip) {
-                std::println("Пересечение найдено в точке {} между фигурой #{} и базовой", *ip, idx);
+                std::println("РџРµСЂРµСЃРµС‡РµРЅРёРµ РЅР°Р№РґРµРЅРѕ РІ С‚РѕС‡РєРµ {} РјРµР¶РґСѓ С„РёРіСѓСЂРѕР№ #{} Рё Р±Р°Р·РѕРІРѕР№", *ip, idx);
             }
             else {
-                std::println("Фигуры базовая и #{} не пересекаются", idx);
+                std::println("Р¤РёРіСѓСЂС‹ Р±Р°Р·РѕРІР°СЏ Рё #{} РЅРµ РїРµСЂРµСЃРµРєР°СЋС‚СЃСЏ", idx);
             }
         }
     }
@@ -48,41 +48,41 @@ inline void PrintDistancesFromPointToShapes(Point2D p, std::span<const Shape> sh
     rs::for_each(first_five, [&](auto&& pair_of_shapes) {
         auto [idx, shape] = pair_of_shapes;
         double dist       = queries::DistanceToPoint(shape, p);
-        std::println("Расстояние от точки {} до фигуры #{} равно {:.3f}", p, idx, dist);
+        std::println("Р Р°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ С‚РѕС‡РєРё {} РґРѕ С„РёРіСѓСЂС‹ #{} СЂР°РІРЅРѕ {:.3f}", p, idx, dist);
     });
 }
 
 inline void PerformShapeAnalysis(std::span<const Shape> shapes) {
     std::println("\n=== Shape Analysis ===");
 
-    // Найти все пересечения между фигурами методом Bounding Box.
+    // РќР°Р№С‚Рё РІСЃРµ РїРµСЂРµСЃРµС‡РµРЅРёСЏ РјРµР¶РґСѓ С„РёРіСѓСЂР°РјРё РјРµС‚РѕРґРѕРј Bounding Box.
     auto collisions = utils::FindAllCollisions(shapes);
     if(!collisions.empty()) {
-        std::println("\nОбнаружены коллизии (пересечения Bounding Box):");
+        std::println("\nРћР±РЅР°СЂСѓР¶РµРЅС‹ РєРѕР»Р»РёР·РёРё (РїРµСЂРµСЃРµС‡РµРЅРёСЏ Bounding Box):");
         std::ranges::for_each(collisions, [](auto&& pair_of_shapes) {
             const auto& [s1, s2] = pair_of_shapes;
-            std::println("  {} пересекается с {}", s1, s2);
+            std::println("  {} РїРµСЂРµСЃРµРєР°РµС‚СЃСЏ СЃ {}", s1, s2);
         });
     }
     else {
-        std::println("\nПересечений Bounding Box не найдено.");
+        std::println("\nРџРµСЂРµСЃРµС‡РµРЅРёР№ Bounding Box РЅРµ РЅР°Р№РґРµРЅРѕ.");
     }
 
-    // Найти самую высокую фигуру.
+    // РќР°Р№С‚Рё СЃР°РјСѓСЋ РІС‹СЃРѕРєСѓСЋ С„РёРіСѓСЂСѓ.
     if(auto highest_idx = utils::FindHighestShape(shapes)) {
-        std::println("\nСамая высокая фигура: #{} (высота = {:.2f})",
+        std::println("\nРЎР°РјР°СЏ РІС‹СЃРѕРєР°СЏ С„РёРіСѓСЂР°: #{} (РІС‹СЃРѕС‚Р° = {:.2f})",
                      *highest_idx, queries::GetHeight(shapes[*highest_idx]));
     }
     else {
-        std::println("\nНе удалось определить самую высокую фигуру (возможно, список пуст).");
+        std::println("\nРќРµ СѓРґР°Р»РѕСЃСЊ РѕРїСЂРµРґРµР»РёС‚СЊ СЃР°РјСѓСЋ РІС‹СЃРѕРєСѓСЋ С„РёРіСѓСЂСѓ (РІРѕР·РјРѕР¶РЅРѕ, СЃРїРёСЃРѕРє РїСѓСЃС‚).");
     }
 
-    // Вывести расстояние между любыми двумя фигурами, поддерживающими данную функциональность.
-    std::println("\nПоддерживаемые расстояния между фигурами:");
+    // Р’С‹РІРµСЃС‚Рё СЂР°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ Р»СЋР±С‹РјРё РґРІСѓРјСЏ С„РёРіСѓСЂР°РјРё, РїРѕРґРґРµСЂР¶РёРІР°СЋС‰РёРјРё РґР°РЅРЅСѓСЋ С„СѓРЅРєС†РёРѕРЅР°Р»СЊРЅРѕСЃС‚СЊ.
+    std::println("\nРџРѕРґРґРµСЂР¶РёРІР°РµРјС‹Рµ СЂР°СЃСЃС‚РѕСЏРЅРёСЏ РјРµР¶РґСѓ С„РёРіСѓСЂР°РјРё:");
     for(auto [i1, s1]: shapes | rv::enumerate) {
         for(auto [i2, s2]: shapes | rv::enumerate | rv::drop(i1 + 1)) {
             if(auto dist = queries::DistanceBetweenShapes(s1, s2)) {
-                std::println("  Расстояние между фигурами #{} и #{} = {:.3f}", i1, i2, *dist);
+                std::println("  Р Р°СЃСЃС‚РѕСЏРЅРёРµ РјРµР¶РґСѓ С„РёРіСѓСЂР°РјРё #{} Рё #{} = {:.3f}", i1, i2, *dist);
             }
         }
     }
@@ -91,21 +91,21 @@ inline void PerformShapeAnalysis(std::span<const Shape> shapes) {
 inline void PerformExtraShapeAnalysis(std::span<const Shape> shapes) {
     std::println("\n=== Shape Extra Analysis ===");
 
-    // Считаем высоты всех фигур.
+    // РЎС‡РёС‚Р°РµРј РІС‹СЃРѕС‚С‹ РІСЃРµС… С„РёРіСѓСЂ.
     auto indexed_heights = shapes | rv::enumerate | rv::transform([](auto&& id_to_shape) {
         auto [i, shape] = id_to_shape;
         return std::pair{i, queries::GetHeight(shape)};
     });
 
-    // Отбираем 3 шт с высотой выше 50.0.
+    // РћС‚Р±РёСЂР°РµРј 3 С€С‚ СЃ РІС‹СЃРѕС‚РѕР№ РІС‹С€Рµ 50.0.
     auto high_shapes = indexed_heights | rv::filter([](auto&& p) {
                            return p.second > 50.0;
                        })
                        | rv::take(3);
 
-    std::println("\nФигуры, находящиеся выше 50.0:");
+    std::println("\nР¤РёРіСѓСЂС‹, РЅР°С…РѕРґСЏС‰РёРµСЃСЏ РІС‹С€Рµ 50.0:");
     std::ranges::for_each(high_shapes, [&](auto&& p) {
-        std::println("  Фигура #{} имеет высоту {:.2f}", p.first, p.second);
+        std::println("  Р¤РёРіСѓСЂР° #{} РёРјРµРµС‚ РІС‹СЃРѕС‚Сѓ {:.2f}", p.first, p.second);
     });
 
     auto indexex_heights_real = indexed_heights | rs::to<std::vector>();
@@ -122,10 +122,10 @@ inline void PerformExtraShapeAnalysis(std::span<const Shape> shapes) {
         });
 
     if(min_it != std::ranges::end(indexex_heights_real) && max_it != std::ranges::end(indexex_heights_real)) {
-        std::println("\nМинимальная высота у фигуры #{} = {:.2f}", min_it->first, min_it->second);
-        std::println("Максимальная высота у фигуры #{} = {:.2f}", max_it->first, max_it->second);
+        std::println("\nРњРёРЅРёРјР°Р»СЊРЅР°СЏ РІС‹СЃРѕС‚Р° Сѓ С„РёРіСѓСЂС‹ #{} = {:.2f}", min_it->first, min_it->second);
+        std::println("РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РІС‹СЃРѕС‚Р° Сѓ С„РёРіСѓСЂС‹ #{} = {:.2f}", max_it->first, max_it->second);
     }
     else {
-        std::println("\nНе удалось определить минимальные и максимальные фигуры (возможно, список пуст).");
+        std::println("\nРќРµ СѓРґР°Р»РѕСЃСЊ РѕРїСЂРµРґРµР»РёС‚СЊ РјРёРЅРёРјР°Р»СЊРЅС‹Рµ Рё РјР°РєСЃРёРјР°Р»СЊРЅС‹Рµ С„РёРіСѓСЂС‹ (РІРѕР·РјРѕР¶РЅРѕ, СЃРїРёСЃРѕРє РїСѓСЃС‚).");
     }
 }

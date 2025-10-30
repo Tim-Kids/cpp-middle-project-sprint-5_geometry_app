@@ -32,7 +32,8 @@ _ReSharper*/
 *.suo
 *.VC.*db
 .DS_Store
-cmake-build-*/
+cmake-build-debug
+cmake-build-release
 .idea/
 .vscode/
 .cache/
