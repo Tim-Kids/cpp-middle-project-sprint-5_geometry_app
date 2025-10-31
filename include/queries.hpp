@@ -1,6 +1,7 @@
 #pragma once
 
 #include "geometry.hpp"
+
 #include <algorithm>
 #include <optional>
 #include <variant>
@@ -12,10 +13,6 @@ struct Multilambda: Ts... {
     using Ts::operator()...;
 };
 
-inline double Clamp(double v, double lo, double hi) {
-    return std::max(lo, std::min(v, hi));
-}
-
 inline double DistPointToSegment(const Point2D& p, const Point2D& a, const Point2D& b) {
     const Point2D ab  = b - a;
     const double len2 = ab.Dot(ab);
@@ -23,7 +20,7 @@ inline double DistPointToSegment(const Point2D& p, const Point2D& a, const Point
         return p.DistanceTo(a);
     }
     double t           = ((p - a).Dot(ab)) / len2;
-    t                  = Clamp(t, 0.0, 1.0);
+    t                  = std::clamp(t, 0.0, 1.0);
     const Point2D proj = a + ab * t;
     return p.DistanceTo(proj);
 }
