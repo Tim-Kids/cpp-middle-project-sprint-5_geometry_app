@@ -104,9 +104,9 @@ class ShapeGenerator {
 inline std::vector<std::pair<Shape, Shape>> FindAllCollisions(std::span<const Shape> shapes) {
     auto collected_shapes = shapes | rv::enumerate | rv::transform([&](auto&& indexed_left) {
         auto&& [id_left, left_shape] = indexed_left;
-        // каждый раз сдвигаем view на один элемент вправо, чтобы повторно не сравнивать предыдущие элементы.
-        auto tail_shapes             = shapes | rv::drop(id_left + 1);
-        return tail_shapes | rv::filter([&](auto&& right_shape) {
+        return shapes | rv::drop(id_left + 1)   // Каждый раз сдвигаем view на один элемент вправо,
+                                                // чтобы повторно не сравнивать предыдущие элементы.
+        | rv::filter([&](auto&& right_shape) {
             return queries::BoundingBoxesOverlap(left_shape, right_shape);
         }) | rv::transform([&](auto&& right_shape) {
             return std::pair{left_shape, right_shape};
