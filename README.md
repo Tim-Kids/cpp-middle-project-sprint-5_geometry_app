@@ -1,125 +1,123 @@
-# cpp-middle-project-sprint-5 <!-- omit in toc -->
+# Geometry Library
 
-- [До начала использования Docker контейнера: Настройка переменных окружения](#до-начала-использования-docker-контейнера-настройка-переменных-окружения)
-- [Начало работы](#начало-работы)
-- [Сборка проекта и запуск тестов](#сборка-проекта-и-запуск-тестов)
-  - [Команды для сборки проекта](#команды-для-сборки-проекта)
-  - [Команды для запуска приложения](#команды-для-запуска-приложения)
-  - [Команда для запуска тестов](#команда-для-запуска-тестов)
-  - [Команда для запуска clang-format — обязательное требование перед сдачей работы на ревью](#команда-для-запуска-clang-format--обязательное-требование-перед-сдачей-работы-на-ревью)
-  - [Команды для запуска отладчика](#команды-для-запуска-отладчика)
-- [Дополнительно](#дополнительно)
+[![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![C++ Standard](https://img.shields.io/badge/C%2B%2B-26-blue.svg)](https://en.cppreference.com/w/)
+[![Tests](https://img.shields.io/badge/tests-passing-success.svg)]()
+[![Matplot++](https://img.shields.io/badge/visualization-Matplot%2B%2B-purple.svg)](https://github.com/alandefreitas/matplotplusplus)
 
+> Modern C++26 geometry library providing a set of 2D primitives, analytical tools, and geometric algorithms built with zero-cost abstractions and expressive functional design.
 
-Шаблон репозитория для практического задания 5-го спринта «Мидл разработчик С++»
+---
 
-## До начала использования Docker контейнера: Настройка переменных окружения
+## 🧭 Overview
 
-Для корректной работы контейнера добавьте в ваш bash-профиль две переменные окружения и обновите его, выполнив следующие команды:
+The **Geometry Library** is a modular C++ toolkit for two-dimensional computational geometry.  
+It demonstrates how to model, analyze, and visualize geometric primitives using **modern language features** — `std::variant`, `std::expected`, `std::optional`, and `std::ranges` — while keeping a clean, production-grade design.
+
+---
+
+## ✨ Features
+
+- **Shape primitives**
+  - `Point2D`, `Line`, `Triangle`, `Rectangle`, `RegularPolygon`, `Circle`, `Polygon`
+- **Algorithms**
+  - Convex Hull via *Graham Scan*
+  - Bounding Box Collision Detection
+  - Delaunay Triangulation via *Bowyer–Watson*
+- **Query and visitor utilities**
+  - Intersection and distance visitors
+  - Bounding box, height, and overlap queries
+- **Functional and modern C++**
+  - `std::variant`-based polymorphism (no virtual tables)
+  - `std::expected` for error handling
+  - Declarative transformations via `std::ranges`
+- **Visualization**
+  - Interactive plotting through [Matplot++](https://github.com/alandefreitas/matplotplusplus)
+- **Testing**
+  - Comprehensive GTest suite covering all modules
+
+---
+
+## ⚙️ Build Instructions
+
+### Requirements
+
+| Component | Minimum Version |
+|------------|----------------|
+| **CMake** | 3.30 |
+| **Compiler** | GCC 15 / Clang 18 / MSVC 2025 (C++26) |
+| **GTest** | Auto-fetched |
+| **Matplot++** | v1.2.2 (via CPM.cmake) |
+
+### Build and Run
 
 ```bash
-# Set USER_UID and USER_GID
-echo -e '\nexport USER_UID=$(id -u)\nexport USER_GID=$(id -g)' >> ~/.bashrc
-
-# Update bash-profile
-source ~/.bashrc
+cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build -j
+./build/GeometryApp
 ```
 
-Перед началом работы с Docker контейнером, убедитесь, что переменные окружения доступны, внутри используемой вами IDE (например в терминале внутри VS Code):
-
-```bash
-printf "\nUSER_UID=${USER_UID=}\nUSER_GID=${USER_GID}\n\n"
-```
-
-## Начало работы
-
-1. Убедитесь, что переменные окружения из предыдущего шага доступны внутри вашей IDE
-2. Нажмите зелёную кнопку `Use this template`, затем `Create a new repository`.
-3. Назовите свой репозиторий.
-4. Склонируйте созданный репозиторий командой `git clone your-repository-name`.
-5. Создайте новую ветку командой `git switch -c development`.
-6. Откройте проект в `Visual Studio Code`.
-7. Нажмите `F1` и откройте проект в dev-контейнере командой `Dev Containers: Reopen in Container`.
-
-![Reopen in container](misc/reopen_in_container.png)
-
-## Сборка проекта и запуск тестов
-
-Данный репозиторий использует следующие инструменты:
-
-- **Conan** — свободный менеджер пакетов для C и C++ с открытым исходным кодом (MIT). Позволяет настраивать процесс сборки программ, скачивать и устанавливать сторонние зависимости и необходимые инструменты. Подробнее о Conan:
-  - https://habr.com/ru/articles/884464
-  - https://docs.conan.io/2.0/tutorial/consuming_packages/build_simple_cmake_project.html
-  - https://docs.conan.io/2.0/tutorial/consuming_packages/the_flexibility_of_conanfile_py.html
-
-- **CPM.cmake** - CMake dependency manager. Поскольку не все пакеты доступны в `Conan`, в качестве альтернативы удобно воспользоваться `CPM.cmake`
-  - https://github.com/cpm-cmake/CPM.cmake
-
-- **cmake** — генератор систем сборки для C и C++. Позволяет создавать проекты, которые могут компилироваться на различных платформах и с различными компиляторами. Подробнее о cmake:
-  - https://dzen.ru/a/ZzZGUm-4o0u-IQlb
-  - https://neerc.ifmo.ru/wiki/index.php?title=CMake_Tutorial
-  - https://cmake.org/cmake/help/book/mastering-cmake/cmake/Help/guide/tutorial/index.html
-
-- **VS Code Dev Docker container** - Docker контейнер, который содержит полностью настроенное окружение для выполнение задания. Подробнее об этой функциональности:
-  - https://habr.com/ru/articles/822707/ - "Почти все, что вы хотели бы знать про Docker"
-  - https://code.visualstudio.com/docs/devcontainers/containers - официальная документация VS Code
-  - https://www.youtube.com/watch?v=p9L7YFqHGk4 - "Docker container for VS Code"
-  - https://www.youtube.com/watch?v=pg19Z8LL06w&t=174s&pp=ygUPRG9ja2VyY29udGFpbmVy - "Docker in 1 hour"
-
-### Команды для сборки проекта
-
-Используйте `F5` для выполнения следующих шагов:
-- Создание папки `build`
-- Вызов `conan` команд для установки требуемых библиотек и запуска процесса сборки
-- Запуска `lldb` отладчика
-
-Также, вы можете запустить только команду построения проекта. Для этого:
-
-- вызовите командное окно, нажав `F1`
-
-- Выберите команду `Tasks: Run Task`
-
-![](misc/select_vscode_tasks.png)
-
-- Выберите команду сборки проекта, например `GCC: Build Debug app`
-
-![](misc/select_concrete_task.png)
-
-### Команды для запуска приложения
+### Run Tests
 
 ```bash
 cd build
-./GeometryApp
+ctest --output-on-failure
 ```
 
-### Команда для запуска тестов
+## 🧪 Example Output
 
-Для запуска тестов вы можете воспользоваться удобным расширением `C++ TestMate`:
+```
+Generated 15 random shapes
 
-![](misc/test_mate.png)
+=== Shape Analysis ===
+Обнаружены коллизии (пересечения Bounding Box):
+  Rectangle(...) пересекается с Circle(...)
+Самая высокая фигура: #7 (высота = 61.45)
+Поддерживаемые расстояния между фигурами:
+  Расстояние между фигурами #0 и #5 = 12.313
 
-### Команда для запуска clang-format — обязательное требование перед сдачей работы на ревью
+Convex hull has 8 vertices
+Delaunay produced 6 triangles
+```
 
-В этом репозитории настроен автоматический запуск clang-format (файл конфигурации — .vscode/settings.json) при сохранении любого файла с кодом.
+---
 
-Убедитесь, что эта функциональность работает:
-- Добавьте несколько пустых линий в любой файл.
-- Сохраните файл.
-- Если пустые линии были удалены, всё работает, если нет — убедитесь, что clangd работает (при открытии файла с кодом в самом низу VS Code на голубой полоске должно быть написано clangd: idle). Для этого:
-    - нажмите `F1` и выполните команду `clangd: Download language server`;
-    - нажмите `F1` и выполните команду `clangd: Restart language server`;
-    - нажмите `F1` и выполните команду `Developer: Reload Window`.
+## 🧰 Technologies and Standards
 
-### Команды для запуска отладчика
+| Category | Tools / Concepts |
+|-----------|------------------|
+| **Language** | C++26, Ranges, Concepts, `std::expected`, `std::variant`, `std::optional` |
+| **Build System** | CMake 3.30 |
+| **Testing** | GoogleTest |
+| **Visualization** | Matplot++ |
+| **Design** | Type-safe polymorphism, RAII, monadic composition |
+| **Attributes** | `[[nodiscard]]`, `noexcept`, `constexpr`, `final` |
 
-В Visual Studio Code настройки параметров для запуска отладчика находятся в файле .vscode/launch.json. Поскольку в этом файле для запуска приложения, которое вычисляет контрольную сумму файла, уже есть одна конфигурация Launch GeometryApp, то для запуска отладчика достаточно нажать F5 или открыть окно Run and Debug комбинацией клавиш `Ctrl+Shift+D`.
+---
 
-## Дополнительно
+## 🧩 Key Components
 
-Для настройки автодополнения `Ctrl + Space` нажмите `F1` и выполните команду `clangd: Download language server`. VS Code сам предложит установить подходящую версию clangd (всплывашка в правом нижнем углу). После завершения установки перезагрузите окно кнопкой перезапуска справа снизу или с помощью `F1` и выполните команду `Developer: Reload Window`.
+- **Type-safe polymorphism** — using `std::variant` and visitors  
+- **Functional composition** — through `GeometryResult<T>` monads  
+- **Composable visitors** — for intersections, distances, and bounding boxes  
+- **Custom `std::formatter` support** — for `Shape` and `std::vector<Point2D>`  
+- **Analytical layer** — via `analysis_utils.hpp` (collision search, height ranking, metrics)
 
-Если всё сделали правильно, то после успешной сборки проекта вы сможете использовать автодополнение.
+---
 
-![Скриншот 2](misc/clangd_1.png)
+## 🚀 Development Notes
 
-![Скриншот 3](misc/clangd_2.png)
+- Install **gnuplot** for Matplot++ visualization:
+  ```bash
+  sudo apt install gnuplot
+  ```
+- On CI or headless systems, comment out `visualization::Draw()` calls in `main.cpp`.
+
+---
+
+## 🧾 License
+
+This project is licensed under the **MIT License**.  
+See [LICENSE](LICENSE) for full text.
+

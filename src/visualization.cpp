@@ -2,7 +2,6 @@
 #include "geometry.hpp"
 
 #include <matplot/matplot.h>
-#include <print>
 
 namespace geometry::visualization {
 
@@ -11,7 +10,7 @@ struct Multilambda : Ts... {
     using Ts::operator()...;
 };
 
-void Draw(std::span<geometry::Shape> shapes) {
+void Draw(std::span<Shape> shapes) {
     using namespace geometry;
     using namespace matplot;
 
@@ -63,7 +62,7 @@ void Draw(std::span<geometry::Shape> shapes) {
     f->show();
 }
 
-void Draw(std::span<geometry::triangulation::DelaunayTriangle> triangles) {
+void Draw(std::span<triangulation::DelaunayTriangle> triangles) {
     using namespace geometry;
     using namespace matplot;
 
