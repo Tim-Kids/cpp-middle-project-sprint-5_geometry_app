@@ -10,6 +10,9 @@
 #include <vector>
 #include <algorithm>
 
+namespace rs = std::ranges;
+namespace rv = std::ranges::views;
+
 namespace geometry::utils {
 
 inline void RemoveDuplicates(std::vector<Point2D>& points) {
@@ -99,18 +102,17 @@ class ShapeGenerator {
 };
 
 inline std::vector<std::pair<Shape, Shape>> FindAllCollisions(std::span<const Shape> shapes) {
-    std::vector<std::pair<Shape, Shape>> collisions;
-    collisions.reserve(shapes.size());
-
-    for(auto [i, s1]: std::views::enumerate(shapes)) {
-        // Only check pairs (i, j) with j > i.
-        for(auto [j, s2]: std::views::enumerate(shapes) | std::views::drop(i + 1)) {
-            if(queries::BoundingBoxesOverlap(s1, s2)) {
-                collisions.emplace_back(s1, s2);
-            }
-        }
-    }
-    return collisions;
+    auto collected_shapes = shapes | rv::enumerate | rv::transform([&](auto&& indexed_left) {
+        auto&& [id_left, left_shape] = indexed_left;
+        // каждый раз сдвигаем view на один элемент вправо, чтобы повторно не сравнивать предыдущие элементы.
+        auto tail_shapes             = shapes | rv::drop(id_left + 1);
+        return tail_shapes | rv::filter([&](auto&& right_shape) {
+            return queries::BoundingBoxesOverlap(left_shape, right_shape);
+        }) | rv::transform([&](auto&& right_shape) {
+            return std::pair{left_shape, right_shape};
+        });
+    }) | rv::join /*укладываем все пары из nested if в один ряд*/ | rs::to<std::vector>();
+    return collected_shapes;
 }
 
 inline std::optional<size_t> FindHighestShape(std::span<const Shape> shapes) {

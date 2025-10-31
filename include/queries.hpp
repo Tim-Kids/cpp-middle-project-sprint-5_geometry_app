@@ -182,17 +182,12 @@ inline double GetHeight(const Shape& shape) {
 }
 
 inline bool BoundingBoxesOverlap(const Shape& shape1, const Shape& shape2) {
-
-    /* ваш код здесь */
     const auto bb1 = GetBoundBox(shape1);
     const auto bb2 = GetBoundBox(shape2);
     return bb1.Overlaps(bb2);
 }
 
 inline std::optional<double> DistanceBetweenShapes(const Shape& shape1, const Shape& shape2) {
-
-    /* ваш код с ShapeToShapeDistanceVisitor здесь*/
-
     // Пытаемся применить поддерживаемые комбинации.
     // Line & Line
     if(std::holds_alternative<Line>(shape1) && std::holds_alternative<Line>(shape2)) {
