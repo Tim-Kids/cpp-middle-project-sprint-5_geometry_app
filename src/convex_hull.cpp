@@ -30,7 +30,7 @@ GeometryResult<std::vector<Point2D>> GrahamScan(std::span<const Point2D> points)
     std::ranges::sort(pts.begin() + 1, pts.end(),
                       [p0](const Point2D& a, const Point2D& b) {
                           double cross = (a - p0).Cross(b - p0);
-                          if(std::abs(cross) < 1e-12) {     // Collinear.
+                          if(std::abs(cross) < FACTOR) {     // Collinear.
                               return p0.DistanceTo(a) < p0.DistanceTo(b);
                           }
                           return cross > 0;

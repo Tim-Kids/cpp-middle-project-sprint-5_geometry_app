@@ -22,7 +22,7 @@ class IntersectionVisitor {
         const double q_pxr = (q - p).Cross(r);
 
         // Параллельны.
-        if(std::abs(rxs) < 1e-12) {
+        if(std::abs(rxs) < FACTOR) {
             // Коллинеарны — множество пересечений/совпадение отрезков.
             // В рамках текущей спецификации вернём "нет единственной точки".
             return std::nullopt;
@@ -50,7 +50,7 @@ class IntersectionVisitor {
         const double d  = std::hypot(dx, dy);
 
         // Нет пересечений или бесконечно много (совпадающие окружности).
-        if(d < 1e-12 || d > r0 + r1 || d < std::abs(r0 - r1)) {
+        if(d < FACTOR || d > r0 + r1 || d < std::abs(r0 - r1)) {
             return std::nullopt;
         }
 
@@ -66,14 +66,14 @@ class IntersectionVisitor {
         const Point2D p2{p0.x + a * dx / d, p0.y + a * dy / d};
 
         // Одна точка (касание).
-        if(h < 1e-12) {
+        if(h < FACTOR) {
             return p2;
         }
 
         // Две точки: вернём детерминированно "левую-нижнюю" (по x, затем по y).
         const Point2D i1{p2.x + h * (-dy / d), p2.y + h * (dx / d)};
         const Point2D i2{p2.x - h * (-dy / d), p2.y - h * (dx / d)};
-        return (i1.x < i2.x || (std::abs(i1.x - i2.x) < 1e-12 && i1.y <= i2.y)) ? i1 : i2;
+        return (i1.x < i2.x || (std::abs(i1.x - i2.x) < FACTOR && i1.y <= i2.y)) ? i1 : i2;
     }
 
     // --- Все прочие комбинации: нет поддержки (по текущей версии файла) ---

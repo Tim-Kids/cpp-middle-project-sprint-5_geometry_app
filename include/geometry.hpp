@@ -12,6 +12,8 @@
 
 namespace geometry {
 
+inline constexpr double FACTOR = 1e-12;
+
 struct Point2D {
     double x, y;
 
@@ -370,7 +372,7 @@ class Polygon {
             Cy += (p.y + q.y) * cross;
         }
         A *= 0.5;
-        if(std::abs(A) < 1e-12) {
+        if(std::abs(A) < FACTOR) {
             // fallback: среднее вершин
             Point2D acc{0, 0};
             for(auto& p: points_) {
